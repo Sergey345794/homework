@@ -4,6 +4,7 @@ import { Schedule } from './schedule';
 import { Model } from 'mongoose';
 import { ScheduleDto } from './schedule.dto';
 import { Room } from 'src/room/room';
+import { ScheduleUpdateDto } from './schedule.uppdate.dto';
 
 @Injectable()
 export class ScheduleService {
@@ -40,13 +41,16 @@ export class ScheduleService {
       throw new HttpException('Schedule is exist', HttpStatus.BAD_REQUEST);
     }
     const number = newSchedule.numberRoom;
-    if (!this.roomModel.findById({ number }).exec) {
-      throw new HttpException(
-        `room number ${number} is reserved`,
-        HttpStatus.CONFLICT,
-      );
-    }
     try {
+      const room = await this.roomModel.findById({ number }).exec();
+      const schedule = await this.scheduleModel.findOne({ number }).exec();
+
+      if (!room && !schedule.getRelevanted()) {
+        throw new HttpException(
+          `room number ${number} is reserved`,
+          HttpStatus.CONFLICT,
+        );
+      }
       const date = new Date(
         newSchedule.date.getFullYear(),
         newSchedule.date.getMonth(),
@@ -55,6 +59,39 @@ export class ScheduleService {
       newSchedule.setDate(date);
 
       this.scheduleModel.create(newSchedule);
+    } catch (error) {
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async delSchedule(date: Date) {
+    if (!date) {
+      throw new HttpException('Date not exist', HttpStatus.BAD_REQUEST);
+    }
+    const schedule = await this.scheduleModel.findOne({ date }).exec();
+    schedule.setRelevanted();
+    try {
+      await this.scheduleModel.create(schedule);
+    } catch (error) {
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async updateSchedule(scheduleDto: ScheduleUpdateDto) {
+    if (!scheduleDto) {
+      throw new HttpException('Data not exist', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      const date = scheduleDto.date;
+      const schedule = await this.scheduleModel.findOne({ date }).exec();
+      schedule.setRelevanted();
+      await this.scheduleModel.create(scheduleDto);
     } catch (error) {
       throw new HttpException(
         'Internal Server Error',

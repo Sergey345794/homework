@@ -20,6 +20,25 @@ export class Schedule {
     required: true,
   })
   date: Date;
+
+  @Prop(Boolean)
+  relevanted: boolean;
+
+  public getRelevanted(): boolean {
+    return this.relevanted;
+  }
+
+  public setRelevanted(): void {
+    this.relevanted = !this.relevanted;
+  }
+
+  public setDate(newDate: Date) {
+    this.date = newDate;
+  }
+
+  public setRoom(newRoom: Room) {
+    this.room = newRoom;
+  }
 }
 
 export const ScheduleSchema = SchemaFactory.createForClass(Schedule);
