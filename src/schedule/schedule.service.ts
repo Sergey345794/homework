@@ -9,9 +9,8 @@ import { ScheduleUpdateDto } from './schedule.uppdate.dto';
 @Injectable()
 export class ScheduleService {
   constructor(
-    @InjectModel(Schedule.name, Room.name)
-    private readonly scheduleModel: Model<Schedule>,
-    private readonly roomModel: Model<Room>,
+    @InjectModel(Schedule.name) private readonly scheduleModel: Model<Schedule>,
+    @InjectModel(Room.name) private readonly roomModel: Model<Room>,
   ) {}
 
   async getSchedule(date: Date): Promise<Schedule> {

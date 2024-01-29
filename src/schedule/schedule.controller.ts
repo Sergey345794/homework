@@ -9,9 +9,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { Schedule } from './schedule';
-import { Module } from '@nestjs/core/injector/module';
 import { ScheduleService } from './schedule.service';
 import { ScheduleUpdateDto } from './schedule.uppdate.dto';
 import { ScheduleDto } from './schedule.dto';
