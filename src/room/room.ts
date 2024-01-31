@@ -23,5 +23,5 @@ export class Room {
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);
-RoomSchema.set('autoIndex', true);
+// RoomSchema.set('autoIndex', true);
 // RoomSchema.set('_id', false);
