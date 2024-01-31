@@ -12,10 +12,16 @@ export class Room {
   @Prop({ type: String, enum: RoomType })
   typeRoom: RoomType;
 
-  @Prop(Boolean)
+  @Prop({ default: false })
   seaView: boolean;
+
+  print() {
+    console.log(
+      `numberRoom = ${this.numberRoom}, typeRoom = ${this.typeRoom} seaView = ${this.seaView}`,
+    );
+  }
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);
-RoomSchema.set('autoIndex', false);
-RoomSchema.set('_id', false);
+RoomSchema.set('autoIndex', true);
+// RoomSchema.set('_id', false);

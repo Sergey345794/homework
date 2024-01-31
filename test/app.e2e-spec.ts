@@ -2,8 +2,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
+import { RoomDto } from 'src/room/room.dto';
+import { RoomType } from 'src/common/enums/room-type/room-type';
+import { disconnect } from 'mongoose';
 
-describe('AppController (e2e)', () => {
+const testDto: RoomDto = {
+  numberRoom: 101,
+  typeRoom: RoomType.STANDARD,
+  seaView: false,
+};
+
+describe('Room and schedule controllers test (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -15,10 +24,14 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/room/new_room (POST)', () => {
     return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+      .post('/room/new_room')
+      .send(testDto)
+      .expect(200);
+  });
+
+  afterAll(() => {
+    disconnect();
   });
 });
