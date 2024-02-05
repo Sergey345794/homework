@@ -1,23 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { Room } from './room';
+import { Room, RoomDocument } from './model/room';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { RoomDto } from './room.dto';
-import { UpdateRoomDto } from './room.update.dto';
+import { CreateRoomDto } from './dto/room.dto';
+import { UpdateRoomDto } from './dto/room.update.dto';
 
 @Injectable()
 export class RoomService {
   constructor(
-    @InjectModel(Room.name) private readonly roomModel: Model<Room>,
+    @InjectModel(Room.name) private readonly roomModel: Model<RoomDocument>,
   ) {}
 
-  async getRoom(numberRoom: number): Promise<Room> {
-    return this.roomModel.findById({ numberRoom }).exec();
+  async getRoom(numberRoom: number): Promise<RoomDocument> {
+    return this.roomModel.findById(numberRoom).exec();
   }
 
-  async addRoom(roomDto: RoomDto): Promise<void> {
+  async addRoom(roomDto: CreateRoomDto): Promise<RoomDocument> {
     const newRoom = new this.roomModel(roomDto);
+    console.log(newRoom);
     await newRoom.save();
+    return newRoom;
   }
 
   async delRoom(numberRoom: number): Promise<void> {

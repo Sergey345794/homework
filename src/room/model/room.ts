@@ -4,7 +4,7 @@ import { RoomType } from 'src/common/enums/room-type/room-type';
 
 export type RoomDocument = HydratedDocument<Room>;
 
-Schema();
+@Schema()
 export class Room {
   @Prop({ required: true, unique: true, index: true })
   numberRoom: number;
@@ -23,5 +23,3 @@ export class Room {
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);
-// RoomSchema.set('autoIndex', true);
-// RoomSchema.set('_id', false);

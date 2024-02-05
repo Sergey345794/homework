@@ -1,10 +1,10 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { HydratedDocument, Schema as MonSchema } from 'mongoose';
-import { Room } from 'src/room/room';
+import { Room } from 'src/room/model/room';
 
 export type ScheduleDocument = HydratedDocument<Schedule>;
 
-Schema();
+@Schema()
 export class Schedule {
   @Prop({ type: MonSchema.Types.ObjectId, ref: Room.name })
   room: Room;

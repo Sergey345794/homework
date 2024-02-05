@@ -10,9 +10,9 @@ import {
   Put,
 } from '@nestjs/common';
 import { RoomService } from './room.service';
-import { RoomDto } from './room.dto';
-import { Room } from './room';
-import { UpdateRoomDto } from './room.update.dto';
+import { CreateRoomDto } from './dto/room.dto';
+import { Room, RoomDocument } from './model/room';
+import { UpdateRoomDto } from './dto/room.update.dto';
 
 @Controller('room')
 export class RoomController {
@@ -40,7 +40,9 @@ export class RoomController {
 
   @HttpCode(HttpStatus.OK)
   @Post('/new_room')
-  async addRoom(@Body() roomDto: RoomDto) {
-    await this.roomService.addRoom(roomDto);
+  async addRoom(@Body() roomDto: CreateRoomDto): Promise<RoomDocument> {
+    console.log(roomDto);
+
+    return await this.roomService.addRoom(roomDto);
   }
 }
