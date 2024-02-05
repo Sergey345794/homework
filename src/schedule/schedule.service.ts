@@ -43,8 +43,8 @@ export class ScheduleService {
       newSchedule.date.getMonth(),
       newSchedule.date.getDay(),
     );
-    newSchedule.setDate(date);
-    newSchedule.relevanted;
+    schedule.setDate(date);
+    schedule.setRelevanted();
     this.scheduleModel.create(newSchedule);
   }
 
