@@ -11,19 +11,18 @@ export class RoomService {
     @InjectModel(Room.name) private readonly roomModel: Model<RoomDocument>,
   ) {}
 
-  async getRoom(numberRoom: number): Promise<RoomDocument> {
-    return this.roomModel.findById(numberRoom).exec();
+  async getRoom(number_room: number): Promise<RoomDocument> {
+    return this.roomModel.findOne({ numberRoom: number_room }).exec();
   }
 
   async addRoom(roomDto: CreateRoomDto): Promise<RoomDocument> {
     const newRoom = new this.roomModel(roomDto);
-    console.log(newRoom);
     await newRoom.save();
     return newRoom;
   }
 
   async delRoom(numberRoom: number): Promise<void> {
-    await this.roomModel.findByIdAndDelete({ numberRoom }).exec();
+    await this.roomModel.deleteOne({ numberRoom: numberRoom });
   }
 
   async updateRoom(

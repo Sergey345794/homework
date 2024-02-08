@@ -21,7 +21,7 @@ export class Schedule {
   })
   date: Date;
 
-  @Prop(Boolean)
+  @Prop({ default: false })
   relevanted: boolean;
 
   public getRelevanted(): boolean {

@@ -80,6 +80,7 @@ export class ScheduleController {
     if (!newSchedule) {
       throw new HttpException('Schedule is exist', HttpStatus.BAD_REQUEST);
     }
+    
     try {
       await this.scheduleService.addSchedule(newSchedule);
     } catch (error) {

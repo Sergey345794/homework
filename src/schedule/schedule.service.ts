@@ -32,20 +32,15 @@ export class ScheduleService {
       })
       .exec();
 
-    if (!schedule && !schedule.getRelevanted()) {
+    if (schedule) {
       throw new HttpException(
         `room number ${numberRoom} is reserved`,
         HttpStatus.CONFLICT,
       );
     }
-    const date = new Date(
-      newSchedule.date.getFullYear(),
-      newSchedule.date.getMonth(),
-      newSchedule.date.getDay(),
-    );
-    schedule.setDate(date);
-    schedule.setRelevanted();
-    this.scheduleModel.create(newSchedule);
+
+    const scheduleModel = new this.scheduleModel(newSchedule);
+    await scheduleModel.save();
   }
 
   async delSchedule(date: Date, numberRoom: string) {

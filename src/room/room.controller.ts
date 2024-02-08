@@ -1,11 +1,15 @@
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
+  InternalServerErrorException,
   Param,
+  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -18,15 +22,37 @@ import { UpdateRoomDto } from './dto/room.update.dto';
 export class RoomController {
   constructor(private readonly roomService: RoomService) {}
 
-  @Get('/:number')
-  async getRoom(@Param('number') number: number): Promise<Room> {
-    return this.roomService.getRoom(number);
+  @Get('/:number_room')
+  async getRoom(
+    @Param('number_room', ParseIntPipe) number_room: number,
+  ): Promise<Room> {
+    try {
+      const numberRoom = this.roomService.getRoom(number_room);
+      if (!numberRoom) {
+        throw new HttpException(
+          `Room whith number ${number_room} not exist`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      return numberRoom;
+    } catch (error) {
+      throw new HttpException('', HttpStatus.BAD_REQUEST);
+    }
   }
 
   @HttpCode(HttpStatus.OK)
-  @Delete('/del/:number')
-  async deletRoom(@Param('number') number: number): Promise<void> {
-    await this.roomService.delRoom(number);
+  @Delete('/del/:number_room')
+  async deletRoom(
+    @Param('number_room', ParseIntPipe) number_room: number,
+  ): Promise<void> {
+    try {
+      await this.roomService.delRoom(number_room);
+    } catch (error) {
+      throw new HttpException(
+        'Something went wrong...',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   @HttpCode(HttpStatus.OK)
@@ -38,11 +64,19 @@ export class RoomController {
     await this.roomService.updateRoom(number, updateRoomDto);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('/new_room')
   async addRoom(@Body() roomDto: CreateRoomDto): Promise<RoomDocument> {
-    console.log(roomDto);
-
-    return await this.roomService.addRoom(roomDto);
+    try {
+      return await this.roomService.addRoom(roomDto);
+    } catch (error: any) {
+      if (error.code === 11000) {
+        throw new HttpException(
+          'A room with that number already exists.',
+          HttpStatus.CONFLICT,
+        );
+      } else {
+        throw new InternalServerErrorException('An unexpected error occurred.');
+      }
+    }
   }
 }
