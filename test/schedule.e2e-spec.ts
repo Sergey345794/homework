@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
-import { CreateRoomDto } from 'src/room/dto/room.dto';
+import { AppModule } from '../src/app.module';
 import { RoomType } from 'src/common/enums/room-type/room-type';
 import { disconnect } from 'mongoose';
+import { ScheduleDto } from 'src/schedule/dto/schedule.dto';
 
-const testDto: CreateRoomDto = {
+const testDto: ScheduleDto = {
   numberRoom: 101,
-  typeRoom: RoomType.STANDARD,
-  seaView: false,
+  date:  new Date(2024, 4, 17),
+  relevanted: true
 };
 
-describe('Room and schedule controllers test (e2e)', () => {
+describe('Schedule controllers test (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -24,9 +24,9 @@ describe('Room and schedule controllers test (e2e)', () => {
     await app.init();
   });
 
-  it('/room/new_room (POST)', async () => {
+  it('/schedule/new_schadule (POST)', async () => {
     const { body } = await request(app.getHttpServer())
-      .post('/room/new_room')
+      .post('/schedule/new_schadule')
       .send(testDto)
       .expect(200);
 
