@@ -9,24 +9,11 @@ export class Schedule {
   @Prop({ type: MonSchema.Types.ObjectId, ref: Room.name })
   room: Room;
 
-  @Prop({
-    type: Date,
-    set: (val: Date) => {
-      return val
-        ? new Date(val.getFullYear(), val.getMonth(), val.getDay())
-        : val;
-    },
-    index: true,
-    required: true,
-  })
+  @Prop({ type: Date, index: true, required: true })
   date: Date;
 
-  @Prop({ default: false })
+  @Prop({ default: true })
   relevanted: boolean;
-
-  public getRelevanted(): boolean {
-    return this.relevanted;
-  }
 
   public setRelevanted(): void {
     this.relevanted = !this.relevanted;

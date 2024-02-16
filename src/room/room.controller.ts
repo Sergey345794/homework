@@ -1,6 +1,5 @@
 import {
   Body,
-  ConflictException,
   Controller,
   Delete,
   Get,
@@ -8,15 +7,20 @@ import {
   HttpException,
   HttpStatus,
   InternalServerErrorException,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
   Put,
+  UseFilters,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/room.dto';
 import { Room, RoomDocument } from './model/room';
 import { UpdateRoomDto } from './dto/room.update.dto';
+import { InnerExceptionFilter } from './filters/exception-filter/exception-filter.filter';
 
 @Controller('room')
 export class RoomController {
@@ -27,16 +31,16 @@ export class RoomController {
     @Param('number_room', ParseIntPipe) number_room: number,
   ): Promise<Room> {
     try {
-      const numberRoom = this.roomService.getRoom(number_room);
-      if (!numberRoom) {
+      return this.roomService.getRoom(number_room);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      } else {
         throw new HttpException(
-          `Room whith number ${number_room} not exist`,
+          'Something went wrong...',
           HttpStatus.BAD_REQUEST,
         );
       }
-      return numberRoom;
-    } catch (error) {
-      throw new HttpException('', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -47,24 +51,41 @@ export class RoomController {
   ): Promise<void> {
     try {
       await this.roomService.delRoom(number_room);
-    } catch (error) {
-      throw new HttpException(
-        'Something went wrong...',
-        HttpStatus.BAD_REQUEST,
-      );
+    } catch (error: any) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      } else {
+        throw new HttpException(
+          'Something went wrong...',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
     }
   }
 
   @HttpCode(HttpStatus.OK)
-  @Put('/change/:number')
+  @Put('/change/:number_room')
   async changeRoom(
-    @Param('number') number: number,
+    @Param('number_room') number_room: number,
     @Body() updateRoomDto: UpdateRoomDto,
-  ): Promise<void> {
-    await this.roomService.updateRoom(number, updateRoomDto);
+  ): Promise<RoomDocument> {
+    try {
+      return await this.roomService.updateRoom(number_room, updateRoomDto);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      } else {
+        throw new HttpException(
+          'Something went wrong...',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
   }
 
   @Post('/new_room')
+  @UseFilters(new InnerExceptionFilter())
+  @UsePipes(new ValidationPipe())
   async addRoom(@Body() roomDto: CreateRoomDto): Promise<RoomDocument> {
     try {
       return await this.roomService.addRoom(roomDto);

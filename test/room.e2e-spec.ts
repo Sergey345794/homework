@@ -5,11 +5,17 @@ import { AppModule } from '../src/app.module';
 import { CreateRoomDto } from 'src/room/dto/room.dto';
 import { RoomType } from 'src/common/enums/room-type/room-type';
 import { disconnect } from 'mongoose';
+import { UpdateRoomDto } from 'src/room/dto/room.update.dto';
 
 const testDto: CreateRoomDto = {
   numberRoom: 101,
   typeRoom: RoomType.STANDARD,
   seaView: false,
+};
+
+const testUpdateDto: UpdateRoomDto = {
+  typeRoom: RoomType.DELUXE,
+  seaView: true,
 };
 
 const number_room: number = 101;
@@ -52,13 +58,36 @@ describe('Room and schedule controllers test (e2e)', () => {
 
   it('/room/:number_room (GET) negotive ', async () => {
     const numberRoom: number = 301;
-    await request(app.getHttpServer()).get(`/room/${numberRoom}`).expect(200);
+    await request(app.getHttpServer()).get(`/room/${numberRoom}`).expect(404);
+  });
+
+  it('/room/change/:number_room (PUT) positive', async () => {
+    const { body } = await request(app.getHttpServer())
+      .put(`/room/change/${number_room}`)
+      .send(testUpdateDto)
+      .expect(200);
+
+    expect(body.seaView).toEqual(true);
+  });
+
+  it('/room/change/:number_room (PUT) negotive', async () => {
+    const numberRoom: number = 301;
+    await request(app.getHttpServer())
+      .put(`/room/change/${numberRoom}`)
+      .send(testUpdateDto)
+      .expect(404);
   });
 
   it('/room/del/:number_room (DELET) positive', async () => {
     await request(app.getHttpServer())
       .delete(`/room/del/${number_room}`)
       .expect(200);
+  });
+
+  it('/room/del/:number_room (DELET) negotive', async () => {
+    await request(app.getHttpServer())
+      .delete(`/room/del/${number_room}`)
+      .expect(404);
   });
 
   afterAll(() => {
