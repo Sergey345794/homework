@@ -65,8 +65,9 @@ export class RoomController {
 
   @HttpCode(HttpStatus.OK)
   @Put('/change/:number_room')
+  @UsePipes(new ValidationPipe())
   async changeRoom(
-    @Param('number_room') number_room: number,
+    @Param('number_room', ParseIntPipe) number_room: number,
     @Body() updateRoomDto: UpdateRoomDto,
   ): Promise<RoomDocument> {
     try {

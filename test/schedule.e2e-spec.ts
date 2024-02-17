@@ -50,6 +50,14 @@ describe('Schedule controllers test (e2e)', () => {
       .expect(409);
   });
 
+  it('/schedule/new_schadule (POST) negotive', async () => {
+    const date: string = '2024-04-17';
+    await request(app.getHttpServer())
+      .post('/schedule/new_schadule')
+      .send({ ...testDto, date: date })
+      .expect(409);
+  });
+
   it('/schedule/date (GET) positive', async () => {
     const { body } = await request(app.getHttpServer())
       .get(`/schedule/date`)
@@ -76,6 +84,12 @@ describe('Schedule controllers test (e2e)', () => {
       .send(scheduleUpdateDto)
       .expect(404);
   });
+  it('/schedule/change (UPDATE) negotive', async () => {
+    await request(app.getHttpServer())
+      .put(`/schedule/change`)
+      .send({ ...scheduleUpdateDto, relevanted: 'true' })
+      .expect(400);
+  });
 
   //DELETE /////////////////////////////////////////////
   it('/schedule/del (DEL) positive', async () => {
@@ -92,6 +106,13 @@ describe('Schedule controllers test (e2e)', () => {
       .delete(`/schedule/del`)
       .send(testDto)
       .expect(404);
+  });
+
+  it('/schedule/del (DEL) negotive', async () => {
+    await request(app.getHttpServer())
+      .delete(`/schedule/del`)
+      .send({ ...testDto, numberRoom: new Date() })
+      .expect(400);
   });
 
   afterAll(() => {

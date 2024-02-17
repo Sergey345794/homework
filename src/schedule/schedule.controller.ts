@@ -25,6 +25,7 @@ export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}
 
   @Get('/:date')
+  @UsePipes(new ValidationPipe())
   async getSchedule(@Body() date: DateScheduleDto): Promise<RoomDocument> {
     try {
       if (!date) {
@@ -50,6 +51,7 @@ export class ScheduleController {
 
   @HttpCode(HttpStatus.OK)
   @Delete('/del')
+  @UsePipes(new ValidationPipe())
   async deletSchadule(@Body() delDto: ScheduleDto): Promise<ScheduleDocument> {
     if (!delDto) {
       throw new HttpException('Date not exist', HttpStatus.BAD_REQUEST);
@@ -71,6 +73,7 @@ export class ScheduleController {
 
   @HttpCode(HttpStatus.OK)
   @Put('/change')
+  @UsePipes(new ValidationPipe())
   async changeSchedule(
     @Body() updateScheduleDto: ScheduleUpdateDto,
   ): Promise<void> {

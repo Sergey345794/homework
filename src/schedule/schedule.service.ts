@@ -37,9 +37,6 @@ export class ScheduleService {
   }
 
   async addSchedule(newSchedule: ScheduleDto): Promise<ScheduleDocument> {
-    console.log(newSchedule.date instanceof Date);
-    console.log(typeof newSchedule.numberRoom);
-
     const numberRoom = newSchedule.numberRoom;
     const day = newSchedule.date;
     const room: RoomDocument = await this.roomModel

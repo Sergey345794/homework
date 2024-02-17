@@ -48,6 +48,13 @@ describe('Room and schedule controllers test (e2e)', () => {
       .expect(409);
   });
 
+  it('/room/new_room (POST) negotive', async () => {
+    await request(app.getHttpServer())
+      .post('/room/new_room')
+      .send({ ...testDto, numberRoom: '101' })
+      .expect(400);
+  });
+
   it('/room/:number_room (GET) positive ', async () => {
     const { body } = await request(app.getHttpServer())
       .get(`/room/${number_room}`)
@@ -59,6 +66,11 @@ describe('Room and schedule controllers test (e2e)', () => {
   it('/room/:number_room (GET) negotive ', async () => {
     const numberRoom: number = 301;
     await request(app.getHttpServer()).get(`/room/${numberRoom}`).expect(404);
+  });
+
+  it('/room/:number_room (GET) negotive ', async () => {
+    const numberRoom = true;
+    await request(app.getHttpServer()).get(`/room/${numberRoom}`).expect(400);
   });
 
   it('/room/change/:number_room (PUT) positive', async () => {
@@ -77,6 +89,12 @@ describe('Room and schedule controllers test (e2e)', () => {
       .send(testUpdateDto)
       .expect(404);
   });
+  it('/room/change/:number_room (PUT) negotive', async () => {
+    await request(app.getHttpServer())
+      .put(`/room/change/${number_room}`)
+      .send({ ...testUpdateDto, seaView: 101 })
+      .expect(400);
+  });
 
   it('/room/del/:number_room (DELET) positive', async () => {
     await request(app.getHttpServer())
@@ -88,6 +106,13 @@ describe('Room and schedule controllers test (e2e)', () => {
     await request(app.getHttpServer())
       .delete(`/room/del/${number_room}`)
       .expect(404);
+  });
+
+  it('/room/del/:number_room (DELET) negotive', async () => {
+        const numberRoom = true;
+    await request(app.getHttpServer())
+      .delete(`/room/del/${numberRoom}`)
+      .expect(400);
   });
 
   afterAll(() => {
