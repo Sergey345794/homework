@@ -84,10 +84,10 @@ export class ScheduleController {
     try {
       await this.scheduleService.updateSchedule(updateScheduleDto);
     } catch (error) {
-      if (error instanceof ConflictException) {
-        throw error;
-      }
-      if (error instanceof NotFoundException) {
+      if (
+        error instanceof ConflictException ||
+        error instanceof NotFoundException
+      ) {
         throw error;
       }
       throw new HttpException(

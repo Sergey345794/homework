@@ -37,8 +37,7 @@ export class ScheduleService {
   }
 
   async addSchedule(newSchedule: ScheduleDto): Promise<ScheduleDocument> {
-    const numberRoom = newSchedule.numberRoom;
-    const day = newSchedule.date;
+    const { numberRoom, date: day } = newSchedule;
     const room: RoomDocument = await this.roomModel
       .findOne({ numberRoom: newSchedule.numberRoom })
       .exec();

@@ -35,12 +35,11 @@ export class RoomController {
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
-      } else {
-        throw new HttpException(
-          'Something went wrong...',
-          HttpStatus.BAD_REQUEST,
-        );
       }
+      throw new HttpException(
+        'Something went wrong...',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -54,12 +53,11 @@ export class RoomController {
     } catch (error: any) {
       if (error instanceof NotFoundException) {
         throw error;
-      } else {
-        throw new HttpException(
-          'Something went wrong...',
-          HttpStatus.BAD_REQUEST,
-        );
       }
+      throw new HttpException(
+        'Something went wrong...',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -75,12 +73,11 @@ export class RoomController {
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
-      } else {
-        throw new HttpException(
-          'Something went wrong...',
-          HttpStatus.BAD_REQUEST,
-        );
       }
+      throw new HttpException(
+        'Something went wrong...',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -96,9 +93,8 @@ export class RoomController {
           'A room with that number already exists.',
           HttpStatus.CONFLICT,
         );
-      } else {
-        throw new InternalServerErrorException('An unexpected error occurred.');
       }
+      throw new InternalServerErrorException('An unexpected error occurred.');
     }
   }
 }
